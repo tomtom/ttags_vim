@@ -9,7 +9,7 @@ Features:
     - List tags
     - Filter tags matching a pattern
     - Jump/Preview tags
-    - Insert tags (and a template for the argument list if supported by 
+    - Insert tags (and a template for the argument list if supported by
       tSkeleton, which has to be installed for this)
 
 
@@ -20,8 +20,8 @@ Edit the vba file and type: >
 
     :so %
 
-See :help vimball for details. If you have difficulties or use vim 7.0, 
-please make sure, you have the current version of vimball (vimscript 
+See :help vimball for details. If you have difficulties or use vim 7.0,
+please make sure, you have the current version of vimball (vimscript
 #1502) installed.
 
 This script requires tlib (vimscript #1863) to be installed.
@@ -46,6 +46,7 @@ Contents~
         g:ttags_kinds ............ |g:ttags_kinds|
         g:ttags_name_rx .......... |g:ttags_name_rx|
         g:ttags_filename_rx ...... |g:ttags_filename_rx|
+        g:ttags_shorten_path ..... |g:ttags_shorten_path|
         g:ttags_display .......... |g:ttags_display|
         g:ttags_rewrite .......... |g:ttags_rewrite|
         g:ttags_match_front ...... |g:ttags_match_front|
@@ -69,7 +70,7 @@ plugin/ttags.vim~
                                                     *:TTags*
 TTags[!] [KIND] [TAGS_RX] [FILE_RX]
     See also |ttags#List()| and |ttags#SelectTags()|.
-    
+
     Examples:
     Match tags in the current file: >
       TTags * * .
@@ -81,14 +82,14 @@ TTags[!] [KIND] [TAGS_RX] [FILE_RX]
 
                                                     *:TTagselect*
 TTagselect[!] kind:KIND FIELD:REGEXP ...
-    For values of field see |taglist()|. These fields depend also on your 
+    For values of field see |taglist()|. These fields depend also on your
     tags generator.
-    
-    If you want to automatically restict your searches to the current 
-    namespace, you would have to write a function that determines the 
-    namespace (and maybe e-mail it to me) and then call 
+
+    If you want to automatically restict your searches to the current
+    namespace, you would have to write a function that determines the
+    namespace (and maybe e-mail it to me) and then call
     |ttags#SelectTags()|.
-    
+
     Examples:
       " Show tags matching "bar" in class "Foo"
       TTagselect name:bar class:Foo
@@ -106,14 +107,18 @@ g:ttags_name_rx                (default: '')
                                                     *g:ttags_filename_rx*
 g:ttags_filename_rx            (default: '')
 
+                                                    *g:ttags_shorten_path*
+g:ttags_shorten_path           (default: 1)
+    Shorten directory names in the tag file path. See pathshorten()
+
                                                     *g:ttags_display*
 g:ttags_display                (default: 'tlib')
     How to display the tags list. Can be one of: tlib, quickfix, locations
 
                                                     *g:ttags_rewrite*
 g:ttags_rewrite                (default: '')
-    The name of a function, which takes the filename as argument, that 
-    rewrites the tag filename (e.g. in order to circumvent 
+    The name of a function, which takes the filename as argument, that
+    rewrites the tag filename (e.g. in order to circumvent
     incompatibilities between cygwin ctags & windows vim).
 
                                                     *g:ttags_match_front*
@@ -127,8 +132,8 @@ g:ttags_match_end              (default: 1)
                                                     *g:ttags_highlighting*
 g:ttags_highlighting
     This variable can be buffer local.
-    
-    Filetype specfic highlighting can be defined as 
+
+    Filetype specfic highlighting can be defined as
     g:ttags_highlighting_{&filetype}.
 
                                                     *g:ttags_world*
@@ -155,7 +160,7 @@ ttags#SelectTags(use_extra, constraints)
       constraints: A dictionary of fields and corresponding regexps
         kind     :: The tag letter ID ("*" = match all tags)
         name     :: A rx matching the tag ("*" = match all tags)
-        filename :: A rx matching the filename ('.' = match the current 
+        filename :: A rx matching the filename ('.' = match the current
                     file only)
 
                                                     *ttags#PreviewTag()*

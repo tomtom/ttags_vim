@@ -20,8 +20,11 @@ TLet g:ttags_filename_rx = ''
 " How to display the tags list. Can be one of: tlib, quickfix, locations
 TLet g:ttags_display = 'tlib'
 
-" The name of a function, which takes the filename as argument, that 
-" rewrites the tag filename (e.g. in order to circumvent 
+" Shorten directory names in the tag file path. See pathshorten()
+TLet g:ttags_shorten_path = 1
+
+" The name of a function, which takes the filename as argument, that
+" rewrites the tag filename (e.g. in order to circumvent
 " incompatibilities between cygwin ctags & windows vim).
 TLet g:ttags_rewrite = ''
 
@@ -34,7 +37,7 @@ TLet g:ttags_match_end   = 1
 " :nodefault:
 " This variable can be buffer local.
 "
-" Filetype specfic highlighting can be defined as 
+" Filetype specfic highlighting can be defined as
 " g:ttags_highlighting_{&filetype}.
 TLet g:ttags_highlighting = {
             \ 'a': 'Type',
@@ -143,7 +146,7 @@ endf
 "   constraints: A dictionary of fields and corresponding regexps
 "     kind     :: The tag letter ID ("*" = match all tags)
 "     name     :: A rx matching the tag ("*" = match all tags)
-"     filename :: A rx matching the filename ('.' = match the current 
+"     filename :: A rx matching the filename ('.' = match the current
 "                 file only)
 function! ttags#SelectTags(use_extra, constraints) "{{{3
     if get(a:constraints, 'filename', '') == '.'
@@ -190,7 +193,12 @@ endf
 
 function! s:FormatTag(tag) "{{{3
     let name = tlib#tag#Format(a:tag)
-    return printf('%s: %-20s | %s (%s)', a:tag.kind, name, fnamemodify(a:tag.filename, ":t"), pathshorten(fnamemodify(a:tag.filename, ":p:h")))
+    let filepath = fnamemodify(a:tag.filename, ":p:h")
+    if g:ttags_shorten_path
+        let filepath = pathshorten(filepath)
+    endif
+
+    return printf('%s: %-20s | %s (%s)', a:tag.kind, name, fnamemodify(a:tag.filename, ":t"), filepath)
 endf
 
 
