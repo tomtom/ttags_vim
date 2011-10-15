@@ -1,5 +1,3 @@
-*ttags.txt*         Tag list browser (List, filter, preview, jump to tags)
-
 :TTags [KIND] [TAGS_RX] [FILE_RX]
 In order to match any kind/rx, use *.
 E.g. TTags * * _foo.vim$
