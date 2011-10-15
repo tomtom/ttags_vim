@@ -3,8 +3,8 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2007-09-09.
-" @Last Change: 2010-01-03.
-" @Revision:    322
+" @Last Change: 2011-10-15.
+" @Revision:    341
 
 
 " call tlog#Log('Load: '. expand('<sfile>')) " vimtlib-sfile
@@ -231,7 +231,13 @@ endf
 
 
 function! s:GetTag(world, id) "{{{3
-    return a:world.tags[a:world.GetBaseIdx0(a:id)]
+    if a:id > 0
+        let tag = a:world.tags[a:id - 1]
+    else
+        let tag = ''
+    endif
+    " TLogVAR a:id, tag
+    return tag
 endf
 
 
@@ -268,6 +274,7 @@ endf
 
 
 function! ttags#GotoTag(world, selected) "{{{3
+    " TLogVAR a:selected
     if empty(a:selected)
         call a:world.RestoreOrigin()
     else
