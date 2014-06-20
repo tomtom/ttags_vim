@@ -4,7 +4,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2007-09-09.
 " @Last Change: 2011-10-15.
-" @Revision:    341
+" @Revision:    343
 
 
 " call tlog#Log('Load: '. expand('<sfile>')) " vimtlib-sfile
