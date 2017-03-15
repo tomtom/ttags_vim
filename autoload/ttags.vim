@@ -3,9 +3,16 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2007-09-09.
-" @Last Change: 2011-10-15.
-" @Revision:    343
+" @Last Change: 2017-03-15.
+" @Revision:    350
 
+if !exists('g:loaded_tlib') || g:loaded_tlib < 123
+    runtime plugin/02tlib.vim
+    if !exists('g:loaded_tlib') || g:loaded_tlib < 123
+        echoerr 'tlib >= 1.23 is required'
+        finish
+    endif
+endif
 
 " call tlog#Log('Load: '. expand('<sfile>')) " vimtlib-sfile
 
@@ -67,7 +74,7 @@ TLet g:ttags_world = {
 
 
 
-function! ttags#Kinds(...) "{{{3
+function! ttags#Kinds(...) abort "{{{3
     TVarArg ['tags', []]
     if empty(tags)
         let tags = taglist('.')
@@ -89,7 +96,7 @@ function! ttags#Kinds(...) "{{{3
 endf
 
 
-function! ttags#Highlight(tags) "{{{3
+function! ttags#Highlight(tags) abort "{{{3
     let kinds = sort(keys(ttags#Kinds(a:tags)))
     let acc = []
     let hv = tlib#var#Get('ttags_highlighting_'. &filetype, 'bg', tlib#var#Get('ttags_highlighting', 'bg'))
@@ -118,7 +125,7 @@ endf
 
 " :def: function! ttags#List(use_extra, ?kind='', ?rx='', ?file_rx='')
 " Calls |ttags#SelectTags()|.
-function! ttags#List(use_extra, ...) "{{{3
+function! ttags#List(use_extra, ...) abort "{{{3
     TVarArg ['kind', tlib#var#Get('ttags_kinds', 'wbg')],
                 \ ['rx', tlib#var#Get('ttags_name_rx', 'wbg')],
                 \ ['file_rx', tlib#var#Get('ttags_filename_rx', 'wbg')]
@@ -128,13 +135,13 @@ endf
 
 
 " Calls |ttags#SelectTags()|.
-function! ttags#Select(use_extra, keyargs_as_string) "{{{3
+function! ttags#Select(use_extra, keyargs_as_string) abort "{{{3
     let constraints = s:ParseArgs(a:keyargs_as_string)
     call ttags#SelectTags(a:use_extra, constraints)
 endf
 
 
-function! s:ParseArgs(keyargs_as_string) "{{{3
+function! s:ParseArgs(keyargs_as_string) abort "{{{3
     let constraints = tlib#var#Get('ttags_constraints', 'wbg', {})
     let constraints = extend(constraints, tlib#arg#StringAsKeyArgs(a:keyargs_as_string))
     return constraints
@@ -148,8 +155,8 @@ endf
 "     name     :: A rx matching the tag ("*" = match all tags)
 "     filename :: A rx matching the filename ('.' = match the current
 "                 file only)
-function! ttags#SelectTags(use_extra, constraints) "{{{3
-    if get(a:constraints, 'filename', '') == '.'
+function! ttags#SelectTags(use_extra, constraints) abort "{{{3
+    if get(a:constraints, 'filename', '') ==# '.'
         let a:constraints.filename = substitute(substitute(expand('%:p'), '[\\/]', '[\\\\/]', 'g'), '^[^:]\+:', '', '')
         " TLogVAR a:constraints.filename
     endif
@@ -161,10 +168,10 @@ function! ttags#SelectTags(use_extra, constraints) "{{{3
     " TLogVAR world.tags
     if !empty(world.tags)
         let display = tlib#var#Get('ttags_display', 'bg')
-        if display == 'locations'
+        if display ==# 'locations'
             call setloclist(0, s:MakeQFL(world.tags))
             lwindow
-        elseif display == 'quickfix'
+        elseif display ==# 'quickfix'
             call setqflist(s:MakeQFL(world.tags))
             cwindow
         else
@@ -184,38 +191,38 @@ function! ttags#SelectTags(use_extra, constraints) "{{{3
 endf
 
 
-function! s:NoTags() "{{{3
+function! s:NoTags() abort "{{{3
     echohl Error
     echom 'ttags: No tags'
     echohl NONE
 endf
 
 
-function! s:FormatTag(tag) "{{{3
+function! s:FormatTag(tag) abort "{{{3
     let name = tlib#tag#Format(a:tag)
-    let filepath = fnamemodify(a:tag.filename, ":p:h")
+    let filepath = fnamemodify(a:tag.filename, ':p:h')
     if g:ttags_shorten_path
         let filepath = pathshorten(filepath)
     endif
 
-    return printf('%s: %-20s | %s (%s)', a:tag.kind, name, fnamemodify(a:tag.filename, ":t"), filepath)
+    return printf('%s: %-20s | %s (%s)', a:tag.kind, name, fnamemodify(a:tag.filename, ':t'), filepath)
 endf
 
 
-function! s:MakeQFL(tags) "{{{3
+function! s:MakeQFL(tags) abort "{{{3
     return map(copy(a:tags), 's:MakeQFE(v:val)')
 endf
 
 
-function! s:MakeQFE(tag) "{{{3
+function! s:MakeQFE(tag) abort "{{{3
     let rv = {}
     for [o, n] in [['filename', 'filename'], ['cmd', 'pattern'], ['kind', 'type']]
         let v = get(a:tag, o)
         if !empty(v)
-            if o == 'cmd'
-                if v =~ '^/.\{-}/$'
+            if o ==# 'cmd'
+                if v =~# '^/.\{-}/$'
                     let v = v[1:-2]
-                elseif v[0] == '/'
+                elseif v[0] ==# '/'
                     let v = v[1:-1]
                 else
                     let v = matchstr(v, '^\d\+')
@@ -230,7 +237,7 @@ function! s:MakeQFE(tag) "{{{3
 endf
 
 
-function! s:GetTag(world, id) "{{{3
+function! s:GetTag(world, id) abort "{{{3
     if a:id > 0
         let tag = a:world.tags[a:id - 1]
     else
@@ -241,7 +248,7 @@ function! s:GetTag(world, id) "{{{3
 endf
 
 
-function! s:ShowTag(world, tagline) "{{{3
+function! s:ShowTag(world, tagline) abort "{{{3
     let tag = s:GetTag(a:world, a:tagline)
     " TLogVAR tag.filename
     let rewriter = tlib#var#Get('ttags_rewrite', 'bg')
@@ -264,7 +271,7 @@ function! s:ShowTag(world, tagline) "{{{3
 endf
 
 
-function! ttags#PreviewTag(world, selected) "{{{3
+function! ttags#PreviewTag(world, selected) abort "{{{3
     let back = a:world.SwitchWindow('win')
     call s:ShowTag(a:world, a:selected[0])
     exec back
@@ -273,14 +280,14 @@ function! ttags#PreviewTag(world, selected) "{{{3
 endf
 
 
-function! ttags#GotoTag(world, selected) "{{{3
+function! ttags#GotoTag(world, selected) abort "{{{3
     " TLogVAR a:selected
     if empty(a:selected)
         call a:world.RestoreOrigin()
     else
-        if a:world.win_wnr != winnr()
+        if a:world.win_id != tlib#win#GetID()
             let world = tlib#agent#Suspend(a:world, a:selected)
-            exec a:world.win_wnr .'wincmd w'
+            call tlib#win#GotoID(a:world.win_id)
         endif
         call s:ShowTag(a:world, a:selected[0])
         call a:world.SetOrigin()
@@ -289,7 +296,7 @@ function! ttags#GotoTag(world, selected) "{{{3
 endf
 
 
-function! ttags#InsertTemplate(world, selected) "{{{3
+function! ttags#InsertTemplate(world, selected) abort "{{{3
     let back = a:world.SwitchWindow('win')
     for tagid in a:selected
         let tag = s:GetTag(a:world, tagid)
@@ -305,7 +312,7 @@ function! ttags#InsertTemplate(world, selected) "{{{3
 endf
 
 
-function! ttags#RewriteCygwinTag(filename) "{{{3
+function! ttags#RewriteCygwinTag(filename) abort "{{{3
     return substitute(a:filename, '^.\{-}[\/]cygdrive[\/]\(.\)', '\1:', '')
 endf
 

@@ -3,22 +3,15 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2007-09-09.
-" @Last Change: 2010-01-03.
-" @Revision:    165
+" @Last Change: 2017-03-15.
+" @Revision:    167
 " GetLatestVimScripts: 2018 1 ttags.vim
 "
 " TODO: Open in new window (split, vsplit, tab)
 " TODO: Fix preview
 
-if &cp || exists("loaded_ttags")
+if &cp || exists('loaded_ttags')
     finish
-endif
-if !exists('g:loaded_tlib') || g:loaded_tlib < 21
-    runtime plugin/02tlib.vim
-    if !exists('g:loaded_tlib') || g:loaded_tlib < 21
-        echoerr 'tlib >= 0.21 is required'
-        finish
-    endif
 endif
 let loaded_ttags = 6
 
