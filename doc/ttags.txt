@@ -54,47 +54,36 @@ You can use :echo keys(ttags#Kinds())<cr> to find out which kinds are defined.
 ========================================================================
 Contents~
 
-        :TTags ................... |:TTags|
-        :TTagselect .............. |:TTagselect|
-        g:ttags_kinds ............ |g:ttags_kinds|
-        g:ttags_name_rx .......... |g:ttags_name_rx|
-        g:ttags_filename_rx ...... |g:ttags_filename_rx|
-        g:ttags_display .......... |g:ttags_display|
-        g:ttags_shorten_path ..... |g:ttags_shorten_path|
-        g:ttags_rewrite .......... |g:ttags_rewrite|
-        g:ttags_match_front ...... |g:ttags_match_front|
-        g:ttags_match_end ........ |g:ttags_match_end|
-        g:ttags_highlighting ..... |g:ttags_highlighting|
-        g:ttags_world ............ |g:ttags_world|
-        ttags#Kinds .............. |ttags#Kinds()|
-        ttags#Highlight .......... |ttags#Highlight()|
-        ttags#List ............... |ttags#List()|
-        ttags#Select ............. |ttags#Select()|
-        ttags#SelectTags ......... |ttags#SelectTags()|
-        ttags#PreviewTag ......... |ttags#PreviewTag()|
-        ttags#GotoTag ............ |ttags#GotoTag()|
-        ttags#InsertTemplate ..... |ttags#InsertTemplate()|
-        ttags#RewriteCygwinTag ... |ttags#RewriteCygwinTag()|
+        :Ttags ................. |:Ttags|
+        :Ttagselect ............ |:Ttagselect|
+        g:ttags_display ........ |g:ttags_display|
+        g:ttags_shorten_path ... |g:ttags_shorten_path|
+        g:ttags_rewrite ........ |g:ttags_rewrite|
+        g:ttags_match_front .... |g:ttags_match_front|
+        g:ttags_match_end ...... |g:ttags_match_end|
+        g:ttags_highlighting ... |g:ttags_highlighting|
+        ttags#List ............. |ttags#List()|
+        ttags#Select ........... |ttags#Select()|
+        ttags#SelectTags ....... |ttags#SelectTags()|
 
 
-========================================================================
-plugin/ttags.vim~
-
-                                                    *:TTags*
-TTags[!] [KIND] [TAGS_RX] [FILE_RX]
+------------------------------------------------------------------------
+                                                    *plugin/ttags.vim*
+                                                    *:Ttags*
+Ttags[!] [KIND] [TAGS_RX] [FILE_RX]
     See also |ttags#List()| and |ttags#SelectTags()|.
 
     Examples:
     Match tags in the current file: >
-      TTags * * .
+      Ttags * * .
 <   Show classes [c]: >
-      TTags c
+      Ttags c
 <   Show classes beginning with Foo: >
-      TTags c ^Foo
+      Ttags c ^Foo
 <
 
-                                                    *:TTagselect*
-TTagselect[!] kind:KIND FIELD:REGEXP ...
+                                                    *:Ttagselect*
+Ttagselect[!] kind:KIND FIELD:REGEXP ...
     For values of field see |taglist()|. These fields depend also on your 
     tags generator.
 
@@ -105,21 +94,11 @@ TTagselect[!] kind:KIND FIELD:REGEXP ...
 
     Examples:
       " Show tags matching "bar" in class "Foo"
-      TTagselect name:bar class:Foo
+      Ttagselect name:bar class:Foo
 
 
-========================================================================
-autoload/ttags.vim~
-
-                                                    *g:ttags_kinds*
-g:ttags_kinds                  (default: '')
-
-                                                    *g:ttags_name_rx*
-g:ttags_name_rx                (default: '')
-
-                                                    *g:ttags_filename_rx*
-g:ttags_filename_rx            (default: '')
-
+------------------------------------------------------------------------
+                                                    *autoload/ttags.vim*
                                                     *g:ttags_display*
 g:ttags_display                (default: 'tlib')
     How to display the tags list. Can be one of: tlib, quickfix, locations
@@ -149,15 +128,6 @@ g:ttags_highlighting
     Filetype specfic highlighting can be defined as
     g:ttags_highlighting_{&filetype}.
 
-                                                    *g:ttags_world*
-g:ttags_world
-
-                                                    *ttags#Kinds()*
-ttags#Kinds(...)
-
-                                                    *ttags#Highlight()*
-ttags#Highlight(tags)
-
                                                     *ttags#List()*
 ttags#List(use_extra, ?kind='', ?rx='', ?file_rx='')
     Calls |ttags#SelectTags()|.
@@ -176,18 +146,6 @@ ttags#SelectTags(use_extra, constraints)
         filename :: A rx matching the filename ('.' = match the current
                     file only)
 
-                                                    *ttags#PreviewTag()*
-ttags#PreviewTag(world, selected)
-
-                                                    *ttags#GotoTag()*
-ttags#GotoTag(world, selected)
-
-                                                    *ttags#InsertTemplate()*
-ttags#InsertTemplate(world, selected)
-
-                                                    *ttags#RewriteCygwinTag()*
-ttags#RewriteCygwinTag(filename)
 
 
-
-vim:tw=78:fo=tcq2:isk=!-~,^*,^|,^":ts=8:ft=help:norl:
+vim:tw=78:fo=w2croql:isk=!-~,^*,^|,^":ts=8:ft=help:norl:

@@ -3,13 +3,13 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2007-09-09.
-" @Last Change: 2017-03-15.
-" @Revision:    350
+" @Last Change: 2019-04-23.
+" @Revision:    376
 
 if !exists('g:loaded_tlib') || g:loaded_tlib < 123
     runtime plugin/02tlib.vim
     if !exists('g:loaded_tlib') || g:loaded_tlib < 123
-        echoerr 'tlib >= 1.23 is required'
+        echoerr 'tlib >= 1.23 is required -- http://bit.ly/tlib_vim'
         finish
     endif
 endif
@@ -41,6 +41,9 @@ TLet g:ttags_match_front = 1
 " Show tags that end with the pattern. Can be buffer-local.
 TLet g:ttags_match_end   = 1
 
+" Show list also when there is only one match; if set to 0, TTags jumps directly to the tag if there is only one match.
+TLet g:ttags_menuone = 1
+
 " :nodefault:
 " This variable can be buffer local.
 "
@@ -61,6 +64,8 @@ TLet g:ttags_world = {
             \ 'query': 'Select tags',
             \ 'pick_last_item': 0,
             \ 'scratch': '__tags__',
+            \ 'scratch_vertical': 1,
+            \ 'resize_vertical': '&co / 3',
             \ 'return_agent': 'ttags#GotoTag',
             \ 'key_handlers': [
                 \ {'key': 16, 'agent': 'ttags#PreviewTag',  'key_name': '<c-p>', 'help': 'Preview'},
@@ -69,8 +74,6 @@ TLet g:ttags_world = {
                 \ {'key': 20, 'agent': 'ttags#InsertTemplate',  'key_name': '<c-t>', 'help': 'Insert template'},
             \ ],
             \ }
-            " \ 'scratch_vertical': 1,
-            " \ 'resize_vertical': '&co / 3',
 
 
 
@@ -162,21 +165,65 @@ function! ttags#SelectTags(use_extra, constraints) abort "{{{3
         " TLogVAR a:constraints.filename
     endif
     " TLogVAR a:use_extra, a:constraints
-    let world      = copy(g:ttags_world)
-    let world.tags = tlib#tag#Collect(a:constraints, a:use_extra,
+    let tags = tlib#tag#Collect(a:constraints, a:use_extra,
                 \ tlib#var#Get('ttags_match_end', 'bg'),
                 \ tlib#var#Get('ttags_match_front', 'bg'))
-    " TLogVAR world.tags
-    if !empty(world.tags)
+    call s:ListTags(tags)
+endf
+
+
+function! s:CompareByLnum(i1, i2)
+    return a:i1.lnum == a:i2.lnum ? 0 : a:i1.lnum > a:i2.lnum ? 1 : -1
+endf
+
+
+function! s:AddLnum(tag) abort "{{{3
+    norm! gg0
+    try
+        let cmd = a:tag.cmd
+        let cmd = substitute(cmd, '^/\zs', '\\M', '')
+        exec cmd
+        let a:tag.lnum = line('.')
+    catch
+        let a:tag.lnum = 99999999999999999999
+    endtry
+    return a:tag
+endf
+
+
+function! ttags#SelectBufferTags(use_extra, ...) abort "{{{3
+    TVarArg ['kind', tlib#var#Get('ttags_kinds', 'wbg')],
+                \ ['rx', tlib#var#Get('ttags_name_rx', 'wbg')]
+    let l:constraints = {'name': rx, 'kind': kind}
+    let l:constraints.filename = substitute(substitute(expand('%:p'), '[\\/]', '[\\\\/]', 'g'), '^[^:]\+:', '', '')
+    let tags = deepcopy(tlib#tag#Collect(l:constraints, a:use_extra,
+                \ tlib#var#Get('ttags_match_end', 'bg'),
+                \ tlib#var#Get('ttags_match_front', 'bg')))
+    let pos = getpos('.')
+    try
+        let tags = map(tags, 's:AddLnum(v:val)')
+    finally
+        call setpos('.', pos)
+    endtry
+    let tags = sort(tags, 's:CompareByLnum')
+    call s:ListTags(tags, 1)
+endf
+
+
+function! s:ListTags(tags, ...) abort "{{{3
+    if !empty(a:tags)
+        let simple = a:0 >= 1 ? a:1 : 0
         let display = tlib#var#Get('ttags_display', 'bg')
         if display ==# 'locations'
-            call setloclist(0, s:MakeQFL(world.tags))
+            call setloclist(0, s:MakeQFL(a:tags))
             lwindow
         elseif display ==# 'quickfix'
-            call setqflist(s:MakeQFL(world.tags))
+            call setqflist(s:MakeQFL(a:tags))
             cwindow
         else
-            let world.base = map(copy(world.tags), 's:FormatTag(v:val)')
+            let world      = copy(g:ttags_world)
+            let world.tags = a:tags
+            let world.base = map(copy(a:tags), 's:FormatTag(v:val, simple)')
             " TLogVAR world.base
             if tlib#cmd#UseVertical('TTags')
                 let world.scratch_vertical = 1
@@ -199,14 +246,22 @@ function! s:NoTags() abort "{{{3
 endf
 
 
-function! s:FormatTag(tag) abort "{{{3
+function! s:FormatTag(tag, simple) abort "{{{3
     let name = tlib#tag#Format(a:tag)
-    let filepath = fnamemodify(a:tag.filename, ':p:h')
-    if g:ttags_shorten_path
-        let filepath = pathshorten(filepath)
+    if a:simple
+        if a:tag.kind ==# 'v'
+            let prefix = '  '
+        else
+            let prefix = ''
+        endif
+        return printf('%s: %s%s', a:tag.kind, prefix, name)
+    else
+        let filepath = fnamemodify(a:tag.filename, ':p:h')
+        if g:ttags_shorten_path
+            let filepath = pathshorten(filepath)
+        endif
+        return printf('%s: %-20s | %s (%s)', a:tag.kind, name, fnamemodify(a:tag.filename, ':t'), filepath)
     endif
-
-    return printf('%s: %-20s | %s (%s)', a:tag.kind, name, fnamemodify(a:tag.filename, ':t'), filepath)
 endf
 
 
@@ -259,13 +314,9 @@ function! s:ShowTag(world, tagline) abort "{{{3
     endif
     call tlib#file#With('edit', 'buffer', [filename], a:world)
     " TLogVAR tag.cmd, filename, bufname('%')
-    let magic = &magic
-    try
-        set nomagic
-        exec tag.cmd
-    finally
-        let &magic = magic
-    endtry
+    let cmd = tag.cmd
+    let cmd = substitute(cmd, '^/\zs', '\\M', '')
+    exec cmd
     call tlib#buffer#HighlightLine(line('.'))
     norm! zz
     redraw

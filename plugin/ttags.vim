@@ -3,8 +3,8 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2007-09-09.
-" @Last Change: 2017-03-15.
-" @Revision:    167
+" @Last Change: 2019-04-11.
+" @Revision:    172
 " GetLatestVimScripts: 2018 1 ttags.vim
 "
 " TODO: Open in new window (split, vsplit, tab)
@@ -19,20 +19,24 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-" :display: TTags[!] [KIND] [TAGS_RX] [FILE_RX]
+" :display: Ttags[!] [KIND] [TAGS_RX] [FILE_RX]
 " See also |ttags#List()| and |ttags#SelectTags()|.
 "
 " Examples:
 " Match tags in the current file: >
-"   TTags * * .
+"   Ttags * * .
 " Show classes [c]: >
-"   TTags c
+"   Ttags c
 " Show classes beginning with Foo: >
-"   TTags c ^Foo
-command! -nargs=* -bang TTags call ttags#List(!empty('<bang>'), <f-args>)
+"   Ttags c ^Foo
+command! -nargs=* -bang Ttags call ttags#List(!empty('<bang>'), <f-args>)
 
 
-" :display: TTagselect[!] kind:KIND FIELD:REGEXP ...
+" :display: Ttagshere[!] [KIND] [TAGS_RX]
+command! -nargs=* -bang Ttagshere call ttags#SelectBufferTags(!empty('<bang>'), <f-args>)
+
+
+" :display: Ttagselect[!] kind:KIND FIELD:REGEXP ...
 " For values of field see |taglist()|. These fields depend also on your 
 " tags generator.
 "
@@ -43,12 +47,8 @@ command! -nargs=* -bang TTags call ttags#List(!empty('<bang>'), <f-args>)
 "
 " Examples:
 "   " Show tags matching "bar" in class "Foo"
-"   TTagselect name:bar class:Foo
-command! -nargs=* -bang TTagselect call ttags#Select(!empty('<bang>'), <q-args>)
-
-
-" With !, rebuild the tags list.
-" command! -nargs=* -bang TTags call ttags#List(empty('<bang>'), <f-args>)
+"   Ttagselect name:bar class:Foo
+command! -nargs=* -bang Ttagselect call ttags#Select(!empty('<bang>'), <q-args>)
 
 
 let &cpo = s:save_cpo

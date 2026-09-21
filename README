@@ -51,9 +51,8 @@ You can use :echo keys(ttags#Kinds())<cr> to find out which kinds are defined.
 
 
 Dependencies:
-  tlib (>= 0.21) :: http://github.com/tomtom/tlib_vim
+  tlib (>= 1.23) :: http://github.com/tomtom/tlib_vim
 
 License: GPLv3 or later
-Install: See http://github.com/tomtom/vimtlib/blob/master/INSTALL.TXT
-See http://github.com/tomtom for related plugins.
+
 
