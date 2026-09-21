@@ -5,6 +5,7 @@ g:ttags_display	ttags.txt	/*g:ttags_display*
 g:ttags_highlighting	ttags.txt	/*g:ttags_highlighting*
 g:ttags_match_end	ttags.txt	/*g:ttags_match_end*
 g:ttags_match_front	ttags.txt	/*g:ttags_match_front*
+g:ttags_menuone	ttags.txt	/*g:ttags_menuone*
 g:ttags_rewrite	ttags.txt	/*g:ttags_rewrite*
 g:ttags_shorten_path	ttags.txt	/*g:ttags_shorten_path*
 plugin/ttags.vim	ttags.txt	/*plugin\/ttags.vim*

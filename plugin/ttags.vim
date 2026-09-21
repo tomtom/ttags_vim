@@ -19,8 +19,9 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-" :display: Ttags[!] [KIND] [TAGS_RX] [FILE_RX]
-" See also |ttags#List()| and |ttags#SelectTags()|.
+" :display: Ttags[!] [KINDS] [TAGS_RX] [FILE_RX]
+" See also |ttags#List()| and |ttags#SelectTags()|. KINDS can be a 
+" string of multiple characters referring to kinds of tags.
 "
 " Examples:
 " Match tags in the current file: >

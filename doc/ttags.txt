@@ -61,6 +61,7 @@ Contents~
         g:ttags_rewrite ........ |g:ttags_rewrite|
         g:ttags_match_front .... |g:ttags_match_front|
         g:ttags_match_end ...... |g:ttags_match_end|
+        g:ttags_menuone ........ |g:ttags_menuone|
         g:ttags_highlighting ... |g:ttags_highlighting|
         ttags#List ............. |ttags#List()|
         ttags#Select ........... |ttags#Select()|
@@ -70,8 +71,9 @@ Contents~
 ------------------------------------------------------------------------
                                                     *plugin/ttags.vim*
                                                     *:Ttags*
-Ttags[!] [KIND] [TAGS_RX] [FILE_RX]
-    See also |ttags#List()| and |ttags#SelectTags()|.
+Ttags[!] [KINDS] [TAGS_RX] [FILE_RX]
+    See also |ttags#List()| and |ttags#SelectTags()|. KINDS can be a 
+    string of multiple characters referring to kinds of tags.
 
     Examples:
     Match tags in the current file: >
@@ -120,6 +122,10 @@ g:ttags_match_front            (default: 1)
                                                     *g:ttags_match_end*
 g:ttags_match_end              (default: 1)
     Show tags that end with the pattern. Can be buffer-local.
+
+                                                    *g:ttags_menuone*
+g:ttags_menuone                (default: 1)
+    Show list also when there is only one match; if set to 0, TTags jumps directly to the tag if there is only one match.
 
                                                     *g:ttags_highlighting*
 g:ttags_highlighting
