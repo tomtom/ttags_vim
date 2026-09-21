@@ -157,7 +157,8 @@ endf
 "                 file only)
 function! ttags#SelectTags(use_extra, constraints) abort "{{{3
     if get(a:constraints, 'filename', '') ==# '.'
-        let a:constraints.filename = substitute(substitute(expand('%:p'), '[\\/]', '[\\\\/]', 'g'), '^[^:]\+:', '', '')
+        " #ISSUE 5
+        let a:constraints.filename = substitute(substitute(expand('%'), '[\\/]', '[\\\\/]', 'g'), '^[^:]\+:', '', '')
         " TLogVAR a:constraints.filename
     endif
     " TLogVAR a:use_extra, a:constraints
