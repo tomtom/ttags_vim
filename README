@@ -1,4 +1,4 @@
-:TTags [KIND] [TAGS_RX] [FILE_RX]
+:TTags [KINDS] [TAGS_RX] [FILE_RX]
 In order to match any kind/rx, use *.
 E.g. TTags * * _foo.vim$
 
