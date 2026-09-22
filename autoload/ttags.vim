@@ -168,7 +168,13 @@ function! ttags#SelectTags(use_extra, constraints) abort "{{{3
     let tags = tlib#tag#Collect(a:constraints, a:use_extra,
                 \ tlib#var#Get('ttags_match_end', 'bg'),
                 \ tlib#var#Get('ttags_match_front', 'bg'))
-    call s:ListTags(tags)
+    if len(tags) == 1 && g:ttags_menuone == 0
+        let world      = copy(g:ttags_world)
+        let world.tags = tags
+        call s:ShowTag(world, 1)
+    else
+        call s:ListTags(tags)
+    endif
 endf
 
 
